@@ -14,5 +14,5 @@ class ProductException extends BaseException
 
     public $msg = '商品不存在';
 
-    public $errorCode = 40000 ;
+    public $errorCode = 20000 ;
 }
