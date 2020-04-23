@@ -18,7 +18,9 @@ use think\Request;
 
 class Token
 {
-
+    /*
+     * 生成token令牌
+     */
     public static function generateToken()
     {
         // 32个随机字符
@@ -50,7 +52,7 @@ class Token
         }
     }
 
-    /**
+    /*
      * 用户专有权限
      */
     public static function needExclusiveScope()
@@ -67,6 +69,9 @@ class Token
         }
     }
 
+    /*
+     * 超级管理员权限
+     */
     public static function needSuperScope()
     {
         $scope = self::getCurrentTokenVar('scope');
@@ -81,7 +86,9 @@ class Token
         }
     }
 
-
+    /*
+     * 获取当前token
+     */
     public static function getCurrentTokenVar($key)
     {
         $token = Request::instance()
@@ -98,6 +105,32 @@ class Token
             } else {
                 throw new Exception('尝试获取的Token变量并不存在');
             }
+        }
+    }
+
+
+    /*
+     * 获取当前的UID
+     * 当需要获取全局UID时，应当调用此方法
+     * 而不应当自己解析UID
+     */
+    public static function getCurrentUid()
+    {
+        $uid = self::getCurrentTokenVar('uid');
+        $scope = self::getCurrentTokenVar('scope');
+        if ($scope == ScopeEnum::Super) {
+            // 只有Super权限才可以自己传入uid
+            // 且必须在get参数中，post不接受任何uid字段
+            $userID = input('get.uid');
+            if (!$userID) {
+                throw new ParameterException(
+                    [
+                        'msg' => '没有指定需要操作的用户对象'
+                    ]);
+            }
+            return $userID;
+        } else {
+            return $uid;
         }
     }
 }
