@@ -6,5 +6,6 @@
  */
 
 return [
-    'img_prefix' => 'http://shoptest.test:8080/images'
+    'img_prefix' => 'http://shoptest.test:8080/images',
+    'token_expire_in' => 7200
 ];
