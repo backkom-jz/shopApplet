@@ -8,16 +8,20 @@
 namespace app\api\controller\v1;
 
 
+use app\api\controller\BaseController;
 use app\api\logic\UserToken;
 use app\api\validate\TokenGet;
 
-class Token
+class Token extends BaseController
 {
-    public function getToken($code = ''){
+    public function getToken($code = '')
+    {
         (new TokenGet())->goCheck();
-        $ut = new UserToken();
+        $ut = new UserToken($code);
         $token = $ut->get();
 
-        return $token;
+        return [
+            'token' => $token
+        ];
     }
 }

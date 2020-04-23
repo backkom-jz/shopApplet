@@ -47,11 +47,34 @@ class Product extends BaseModel
         return $this->hasMany('ProductProperty', 'product_id', 'id');
     }
 
-
+    /*
+     * @param $categoryID
+     * Note: 获取某分类下商品
+     * User: 凸^-^凸
+     * Date: 2020-04-22 17:26
+     */
     public static function getProductsByCategoryId($categoryID)
     {
         $products = self::where('category_id', $categoryID)
             ->select();
         return $products;
+    }
+
+    /*
+     * @param $id
+     * @return null| Product
+     * Note: 获取商品详情
+     * User: 凸^-^凸
+     * Date: 2020-04-22 17:26
+     */
+    public static function getProductDetail($id)
+    {
+        $product = self::with([
+            'images' => function ($query) {
+                $query->with(['imgUrl'])->order('order desc');
+            }
+        ])->with('properties')
+            ->find($id);
+        return $product;
     }
 }

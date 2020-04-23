@@ -8,13 +8,13 @@
 namespace app\api\controller\v1;
 
 
-use app\api\validate\IDCollection;
+use app\api\controller\BaseController;
 use app\api\model\Theme as ThemeModel;
+use app\api\validate\IDCollection;
 use app\api\validate\IDMustBePositiveInt;
 use app\lib\exception\ThemeException;
-use think\Controller;
 
-class Theme extends Controller
+class Theme extends BaseController
 {
 
     /**

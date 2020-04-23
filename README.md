@@ -21,3 +21,5 @@ resultset_type :collection
 
 2.restful风格，基于资源
 
+3.用户权限作用域，token令牌
+
