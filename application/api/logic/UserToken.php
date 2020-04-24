@@ -8,7 +8,8 @@
 namespace app\api\logic;
 
 
-use app\api\model\User;
+use app\api\model\User as UserModel;
+use app\lib\enum\ScopeEnum;
 use app\lib\exception\TokenException;
 use app\lib\exception\WechatException;
 use think\Exception;
@@ -43,9 +44,7 @@ class UserToken extends Token
      */
     public function get()
     {
-        $httpCurl = new CurlHttp('', '', $this->wxLoginUrl);
-        $result = ($httpCurl->curlGet());
-
+        $result = curl_get($this->wxLoginUrl);
         // 注意json_decode的第一个参数true
         // 这将使字符串被转化为数组而非对象
 
@@ -84,7 +83,7 @@ class UserToken extends Token
         // 如果想要更加安全可以考虑自己生成更复杂的令牌
         // 比如使用JWT并加入盐，如果不加入盐有一定的几率伪造令牌
         $openid = $wxResult['openid'];
-        $user = User::getByOpneId($openid);
+        $user = UserModel::getByOpenId($openid);
         // 借助微信的openid作为用户标识
         // 但在系统中的相关查询还是使用自己的uid
         if (!$user) {
@@ -117,7 +116,6 @@ class UserToken extends Token
         $expire_in = config('setting.token_expire_in');
         // 最好在redis等缓冲服务器
         $result = cache($key, $value, $expire_in); //文件缓存
-
         if (!$result){
             throw new TokenException([
                 'msg' => '服务器缓存异常',
@@ -151,7 +149,7 @@ class UserToken extends Token
         // 全局异常处理会记录日志
         // 并且这样的异常属于服务器异常
         // 也不应该定义BaseException返回到客户端
-        $user = User::create(
+        $user = UserModel::create(
             [
                 'openid' => $openid
             ]);

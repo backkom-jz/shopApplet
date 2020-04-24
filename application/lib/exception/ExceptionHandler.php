@@ -25,10 +25,10 @@ class ExceptionHandler extends Handle
         if ($e instanceof BaseException) {
             // 如果是自定义异常
             $this->code = $e->code;
-            $this->msg = $e->getMessage()?:$e->msg;
+            $this->msg = $e->getMessage() ?: $e->msg;
             $this->errorCode = $e->errorCode;
         } else {
-            if(config('app_debug')){
+            if (config('app_debug')) {
                 return parent::render($e);
             }
             // 系统异常
@@ -43,18 +43,19 @@ class ExceptionHandler extends Handle
             'errorCode' => $this->errorCode,
             'request_url' => $request
         ];
-        return json($result,$this->code);
+        return json($result, $this->code);
     }
 
     /*
      * 将异常写入异常
      */
-    public function recordErrorLog(Exception $e){
+    public function recordErrorLog(Exception $e)
+    {
         Log::init([
-            'type' =>'File',
+            'type' => 'File',
             'path' => LOG_PATH,
-            'level' =>['sql'],
-            ]);
-        Log::record($e->getMessage(),'error');
+            'level' => ['sql'],
+        ]);
+        Log::record($e->getMessage(), 'error');
     }
 }

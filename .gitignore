@@ -1,6 +1,7 @@
 /.idea
 /.vscode
 /vendor
+/config/wechat.php
 *.log
 thinkphp
 .env

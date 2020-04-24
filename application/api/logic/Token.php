@@ -12,9 +12,9 @@ use app\lib\enum\ScopeEnum;
 use app\lib\exception\ForbiddenException;
 use app\lib\exception\ParameterException;
 use app\lib\exception\TokenException;
-use think\Cache;
 use think\Exception;
-use think\Request;
+use \think\facade\Request;
+use \think\facade\Cache;
 
 class Token
 {

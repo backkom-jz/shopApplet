@@ -48,12 +48,13 @@ class Order
             $status['order_id'] = -1;
             return $status;
         }
-
         // 打开创单开关
         $orderSnap = $this->snapOrder();
+
         // 创建订单
         $status = $this->createOrderByTrans($orderSnap);
         $status['pass'] = true;
+
         return $status;
 
     }
@@ -175,13 +176,12 @@ class Order
         $userAddress = UserAddressModel::where('user_id', '=', $this->uid)
             ->find();
         if (!$userAddress) {
-            throw new UserException(
-                [
-                    'msg' => '用户收货地址不存在，下单失败',
-                    'errorCode' => 60001,
-                ]);
+            throw new UserException([
+                'msg' => '用户收货地址不存在，下单失败',
+                'errorCode' => 60001]);
         }
-        return $userAddress->toArray();
+
+        return $userAddress;
     }
 
     /*

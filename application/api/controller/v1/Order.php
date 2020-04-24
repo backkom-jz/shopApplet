@@ -15,6 +15,7 @@ use app\api\model\Order as OrderModel;
 use app\api\logic\Token as TokenLogic;
 use app\api\logic\Order as OrderLogic;
 use app\lib\exception\OrderException;
+use app\lib\exception\SuccessMessage;
 use think\Db;
 
 class Order extends BaseController
@@ -45,19 +46,11 @@ class Order extends BaseController
     public function placeOrder()
     {
         (new OrderPlace())->goCheck();
-        Db::startTrans();
-        try {
             $products = input('post.products/a');
             $uid = TokenLogic::getCurrentUid();
-
             $order = new OrderLogic();
             $status = $order->place($uid, $products);
-            Db::commit();
-            return $status;
-        } catch (\Exception $e) {
-            Db::rollback();
-            return $e->getMessage();
-        }
+            return json($status);
     }
 
     /*
