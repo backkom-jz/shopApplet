@@ -33,7 +33,7 @@ class Order
     }
 
     /*
-     * 发送
+     * 创建订单
      */
     public function place($uid, $oProducts)
     {
@@ -42,7 +42,7 @@ class Order
         $this->products = $this->getProductsByOrder($oProducts);        // products 从数据库中查询出来
         $this->uid = $uid;
 
-        // 判断订单商品状态
+        // 判断订单商品状态 库存量检测
         $status = $this->getOrderStatus();
         if (!$status['pass']) {
             $status['order_id'] = -1;
@@ -53,7 +53,7 @@ class Order
 
         // 创建订单
         $status = $this->createOrderByTrans($orderSnap);
-        $status['pass'] = true;
+        $status['pass'] = true;  // 库存检测通过
 
         return $status;
 
