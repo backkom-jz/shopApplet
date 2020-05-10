@@ -14,10 +14,11 @@ use app\lib\exception\OrderException;
 use app\lib\exception\TokenException;
 use app\api\model\Order as OrderModel;
 use app\api\logic\Token as TokenLogic;
-use think\Log;
-use WxPayApi;
 use think\Exception;
+use think\facade\Log;
 
+require_once('../extend/WxPay/WxPay.Api.php');
+require_once('../extend/WxPay/WxPay.Config.php');
 class Pay
 {
     private $orderNo;
@@ -59,19 +60,19 @@ class Pay
         $wxOrderData->SetBody('零食商贩');
         $wxOrderData->SetOpenid($openid);
         $wxOrderData->SetNotify_url(config('secure.pay_back_url'));
-
-        return $this->getPaySignature($wxOrderData);
+        $config = new \WxPayConfig();
+        return $this->getPaySignature($config,$wxOrderData);
     }
 
     //向微信请求订单号并生成签名
-    private function getPaySignature($wxOrderData)
+    private function getPaySignature($config,$wxOrderData)
     {
-        $wxOrder = \WxPayApi::unifiedOrder($wxOrderData);
+        $wxOrder = \WxPayApi::unifiedOrder($config,$wxOrderData);
         // 失败时不会返回result_code
         if($wxOrder['return_code'] != 'SUCCESS' || $wxOrder['result_code'] !='SUCCESS'){
             Log::record($wxOrder,'error');
             Log::record('获取预支付订单失败','error');
-//            throw new Exception('获取预支付订单失败');
+            throw new Exception('获取预支付订单失败');
         }
         $this->recordPreOrder($wxOrder);
         $signature = $this->sign($wxOrder);
@@ -89,8 +90,8 @@ class Pay
     private function sign($wxOrder)
     {
         $jsApiPayData = new \WxPayJsApiPay();
-        $jsApiPayData->SetAppid(config('wx.app_id'));
-        $jsApiPayData->SetTimeStamp((string)time());
+        $jsApiPayData->SetAppid(config('wechat.app_id'));
+        $jsApiPayData->SetTimeStamp((string)time()); // 注意 这里需要转换类型
         $rand = md5(time() . mt_rand(0, 1000));
         $jsApiPayData->SetNonceStr($rand);
         $jsApiPayData->SetPackage('prepay_id=' . $wxOrder['prepay_id']);

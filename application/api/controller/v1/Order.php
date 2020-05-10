@@ -14,6 +14,7 @@ use app\api\validate\OrderPlace;
 use app\api\model\Order as OrderModel;
 use app\api\logic\Token as TokenLogic;
 use app\api\logic\Order as OrderLogic;
+use app\api\validate\PagingParameter;
 use app\lib\exception\OrderException;
 use app\lib\exception\SuccessMessage;
 use think\Db;
@@ -81,6 +82,63 @@ class Order extends BaseController
         if($success){
             return new SuccessMessage();
         }
+    }
+
+    /*
+     * 根据用户id分页获取订单列表（简要信息）
+     * @param int $page
+     * @param int $size
+     * @return array
+     * @throws \app\lib\exception\ParameterException
+     */
+    public function getSummaryByUser($page = 1, $size = 15)
+    {
+        (new PagingParameter())->goCheck();
+        $uid = TokenLogic::getCurrentUid();
+        $pagingOrders = OrderModel::getSummaryByUser($uid, $page, $size);
+        if ($pagingOrders->isEmpty())
+        {
+            return [
+                'current_page' => $pagingOrders->currentPage(),
+                'data' => []
+            ];
+        }
+//        $collection = collection($pagingOrders->items());
+//        $data = $collection->hidden(['snap_items', 'snap_address'])
+//            ->toArray();
+        $data = $pagingOrders->hidden(['snap_items', 'snap_address'])
+            ->toArray();
+        return json([
+            'current_page' => $pagingOrders->currentPage(),
+            'data' => $data
+        ]);
+
+    }
+
+    /*
+     * 获取全部订单简要信息（分页）
+     * @param int $page
+     * @param int $size
+     * @return array
+     * @throws \app\lib\exception\ParameterException
+     */
+    public function getSummary($page=1, $size = 20){
+        (new PagingParameter())->goCheck();
+//        $uid = Token::getCurrentUid();
+        $pagingOrders = OrderModel::getSummaryByPage($page, $size);
+        if ($pagingOrders->isEmpty())
+        {
+            return [
+                'current_page' => $pagingOrders->currentPage(),
+                'data' => []
+            ];
+        }
+        $data = $pagingOrders->hidden(['snap_items', 'snap_address'])->toArray();
+
+        return json([
+            'current_page' => $pagingOrders->currentPage(),
+            'data' => $data
+        ]);
     }
 
 }

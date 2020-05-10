@@ -30,6 +30,7 @@ class Order extends BaseModel
         return json_decode(($value));
     }
 
+
     public static function getSummaryByUser($uid, $page = 1, $size = 15)
     {
         $pagingData = self::where('user_id', '=', $uid)
@@ -37,6 +38,7 @@ class Order extends BaseModel
             ->paginate($size, true, ['page' => $page]);
         return $pagingData;
     }
+
 
     public static function getSummaryByPage($page = 1, $size = 20)
     {
