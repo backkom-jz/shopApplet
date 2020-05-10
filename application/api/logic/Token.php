@@ -133,4 +133,19 @@ class Token
             return $uid;
         }
     }
+
+    /*
+     * 检测UID是否匹配
+     */
+    public static function isValidateOperate($checkUID)
+    {
+        if (!$checkUID) {
+            throw new Exception('检测UID 必须传入一个被检测的UID');
+        }
+        $currentOperateUid = self::getCurrentUid();
+        if ($currentOperateUid == $checkUID) {
+            return true;
+        }
+        return false;
+    }
 }

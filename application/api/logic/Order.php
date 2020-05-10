@@ -10,6 +10,7 @@ namespace app\api\logic;
 
 use app\api\model\Order as OrderModel;
 use app\api\model\OrderProduct as OrderProductModel;
+use app\api\model\OrderProduct;
 use app\api\model\Product as ProductModel;
 use app\api\model\UserAddress as UserAddressModel;
 use app\lib\enum\OrderStatusEnum;
@@ -281,4 +282,24 @@ class Order
 //        $message = new DeliveryMessage();
 //        return $message->sendDeliveryMessage($order, $jumpPage);
     }
+
+    /*
+     * 外部检测库存
+     * @param string $orderId 订单ID
+     * @return array 订单商品状态
+     * @throws Exception
+     */
+    public function checkOrderStock($orderID){
+        // 一定要从订单商品表中直接查询
+        // 不能从商品表中查询订单商品
+        // 这将导致被删除的商品无法查询出订单商品来
+        $oProducts = OrderProductModel::where('order_id', '=', $orderID)
+            ->select();
+        $this->products = $this->getProductsByOrder($oProducts);
+        $this->oProducts = $oProducts;
+        $status = $this->getOrderStatus();
+        return $status;
+    }
+
+
 }
