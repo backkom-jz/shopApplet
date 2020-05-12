@@ -20,6 +20,12 @@ Route::get('api/:version/banner/:id', 'api/:version.Banner/getBanner');
 // Theme
 Route::get('api/:version/theme', 'api/:version.Theme/getSimpleList');
 Route::get('api/:version/theme/:id', 'api/:version.Theme/getComplexOne');
+//Route::group('api/:version/theme',function(){
+//    Route::get('', 'api/:version.Theme/getSimpleList');
+//    Route::get('/:id', 'api/:version.Theme/getComplexOne');
+//    Route::post(':t_id/product/:p_id', 'api/:version.Theme/addThemeProduct');
+//    Route::delete(':t_id/product/:p_id', 'api/:version.Theme/deleteThemeProduct');
+//});
 
 // Product
 Route::get('api/:version/product/recent', 'api/:version.Product/getRecent');
@@ -34,6 +40,13 @@ Route::get('api/:version/category/all', 'api/:version.Category/getAllCategories'
 
 // Token
 Route::post('api/:version/token/user', 'api/:version.Token/getToken');
+
+Route::post('api/:version/token/app', 'api/:version.Token/getAppToken');
+Route::post('api/:version/token/verify', 'api/:version.Token/verifyToken');
+
+//Address
+Route::post('api/:version/address', 'api/:version.Address/createOrUpdateAddress');
+Route::get('api/:version/address', 'api/:version.Address/getUserAddress');
 
 // Order
 Route::post('api/:version/order', 'api/:version.Order/placeOrder');

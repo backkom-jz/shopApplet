@@ -98,16 +98,14 @@ class Order extends BaseController
         $pagingOrders = OrderModel::getSummaryByUser($uid, $page, $size);
         if ($pagingOrders->isEmpty())
         {
-            return [
+            return json([
                 'current_page' => $pagingOrders->currentPage(),
-                'data' => []
-            ];
+                'data' => ['data'=>[]]
+            ]);
         }
-//        $collection = collection($pagingOrders->items());
-//        $data = $collection->hidden(['snap_items', 'snap_address'])
-//            ->toArray();
-        $data = $pagingOrders->hidden(['snap_items', 'snap_address'])
-            ->toArray();
+
+        $data = $pagingOrders->hidden(['snap_items', 'snap_address']);
+
         return json([
             'current_page' => $pagingOrders->currentPage(),
             'data' => $data
@@ -140,5 +138,6 @@ class Order extends BaseController
             'data' => $data
         ]);
     }
+
 
 }

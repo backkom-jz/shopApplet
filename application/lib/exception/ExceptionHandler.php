@@ -54,7 +54,7 @@ class ExceptionHandler extends Handle
         Log::init([
             'type' => 'File',
             'path' => LOG_PATH,
-            'level' => ['sql'],
+            'level' => ['error'],
         ]);
         Log::record($e->getMessage(), 'error');
     }
