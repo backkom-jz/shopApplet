@@ -33,6 +33,23 @@ class Order extends BaseController
      * 成功，进行库存量的扣除
      */
 
+
+    /*
+     * 做一次库存检测
+     * 创建订单
+     * 减库存 -- 预扣除
+     * if pay 真正减库存
+     * 在一定时间没有去支付，还原库存
+     *
+     * php写定时器 ，每个1min去遍历数据库，找到那些超时第二部订单 把这些订单还原库存
+     * linux crontab
+     *
+     * 任务队列
+     * 订单任务加入任务队列里
+     * redis
+     *
+     */
+
     protected $beforeActionList = [
         'checkExclusiveScope' => ['only' => 'placeOrder'],
         'checkPrimaryScope' => ['only' => 'getDetail,getSummaryByUser'],
@@ -131,7 +148,7 @@ class Order extends BaseController
                 'data' => []
             ];
         }
-        $data = $pagingOrders->hidden(['snap_items', 'snap_address'])->toArray();
+        $data = $pagingOrders->hidden(['snap_items', 'snap_address']);
 
         return json([
             'current_page' => $pagingOrders->currentPage(),

@@ -40,9 +40,9 @@ class Token extends BaseController
         (new AppTokenGet())->goCheck();
         $app = new AppTokenLogic();
         $token = $app->get($ac, $se);
-        return [
+        return json([
             'token' => $token
-        ];
+        ]);
     }
 
     public function verifyToken($token='')

@@ -11,6 +11,9 @@ namespace app\api\model;
 
 class Banner extends BaseModel
 {
+    // php think optimize:schema
+    // php think optimize:route
+
     protected $hidden = ['id','delete_time','update_time'];
 
     public function items()
